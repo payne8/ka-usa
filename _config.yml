@@ -1,0 +1,14 @@
+title: Keystone Armory
+description: Website for Keystone Armory
+permalink: /:title/
+exclude: [.gitignore, bower.json, README.md]
+defaults:
+  -
+    scope:
+      path: ""
+    values:
+      layout: default
+collections:
+  docs:
+    output: true
+    permalink: /:name/index.html
