@@ -1,0 +1,27 @@
+{
+  "name": "ka-usa",
+  "version": "0.0.0",
+  "homepage": "https://github.com/payne8/ka-usa",
+  "authors": [
+    "Mason Payne <gomas.bmw@gmail.com>"
+  ],
+  "description": "The website for Keystone Armory in Oklahoma.",
+  "main": "index.html",
+  "keywords": [
+    "Website"
+  ],
+  "license": "none",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "normalize.css": "~3.0.3",
+    "angular": "~1.4.3",
+    "angular-carousel": "~0.3.12"
+  }
+}
