@@ -1,11 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ page.title }} - Keystone Armory</title>
-  <link href="/css/style.css" rel="stylesheet"></link>
+  <link href="/bower_components/normalize.css/normalize.css?_=2" rel="stylesheet"></link>
+  <link href="/bower_components/angular-carousel/dist/angular-carousel.min.css?_=2" rel="stylesheet"></link>
+  <link href="/css/style.css?_=2" rel="stylesheet"></link>
+  <script src="/bower_components/angular/angular.min.js?_=2"></script>
+  <script src="/bower_components/angular-touch/angular-touch.min.js?_=2"></script>
+  <script src="/bower_components/angular-carousel/dist/angular-carousel.min.js?_=2"></script>
+  <script src="/js/header/ka-header.js?_=2"></script>
+  <script src="/js/carousel/ka-carousel.js?_=2"></script>
 </head>
-<body>
-  <h1>Keystone Armory</h1>
-  {{ content }}
+<body ng-app="app">
+  <div ng-controller="siteCtl">
+    {{ content }}
+  </div>
 </body>
 </html>

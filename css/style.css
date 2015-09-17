@@ -1,6 +1,140 @@
 @import url(http://fonts.googleapis.com/css?family=Roboto:400,300,700,500);
 
+html {
+  background: url(/images/misc/background-small.png) no-repeat center center fixed;
+  background-size: cover;
+}
+
+/* fix for carousel touch issues */
+ul[rn-carousel] > li > img { -webkit-user-drag: none; }
+
 body {
   color: #444;
   font-family: 'Roboto', sans-serif;
+}
+
+.background {
+  width: 100%;
+}
+
+.slide-show-container {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-flow: row wrap;
+      -ms-flex-flow: row wrap;
+          flex-flow: row wrap;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+}
+
+.ka-carousel-frame {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-flow: row wrap;
+      -ms-flex-flow: row wrap;
+          flex-flow: row wrap;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.slide-show {
+  margin: auto;
+}
+
+
+/* Large */
+.logo-container {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-flow: row wrap;
+      -ms-flex-flow: row wrap;
+          flex-flow: row wrap;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  background-color: rgba(255,255,255,0.75);
+  z-index: 1000;
+}
+
+.logo {
+  width: 320px;
+  margin: 20px;
+}
+
+.image {
+  height: 400px;
+  width: 600px;
+  background-color: white;
+}
+
+.ka-carousel-images {
+  width: auto;
+  max-width: 600px;
+  height: auto;
+  max-height: 400px;
+}
+
+/* Medium screens */
+@media all and (max-width: 800px) {
+  /*.logo-container {
+    justify-content: flex-start;
+  }*/
+
+  .logo {
+    width: 200px;
+  }
+
+  .image {
+    width: 300px;
+    height: 200px;
+  }
+
+  .ka-carousel-images {
+    max-width: 300px;
+    max-height: 200px;
+  }
+}
+
+/* Small screens */
+@media all and (max-width: 500px) {
+  /*.logo-container {
+    justify-content: flex-start;
+  }*/
+}
+
+
+.background {
+  width: 100%;
 }
