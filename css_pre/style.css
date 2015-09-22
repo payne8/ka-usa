@@ -1,7 +1,7 @@
 @import url(http://fonts.googleapis.com/css?family=Roboto:400,300,700,500);
 
 html {
-  background: url(/images/misc/background-small.png) no-repeat center center fixed;
+  background: url(/images/misc/background-small-compressed.jpg) no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
