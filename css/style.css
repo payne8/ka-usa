@@ -13,11 +13,58 @@ body {
   font-family: 'Roboto', sans-serif;
 }
 
-.background {
-  width: 100%;
+.margin-small {
+  margin: 10px;
 }
 
-.slide-show-container {
+.back-glow {
+  box-shadow: 5px 5px 25px 22px rgba(0, 0, 0, 0.4);
+}
+
+.site {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-flow: column;
+      -ms-flex-flow: column;
+          flex-flow: column;
+  position:absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+}
+
+.main {
+  -webkit-box-flex: 2;
+  -webkit-flex: 2;
+      -ms-flex: 2;
+          flex: 2;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-flow: row wrap;
+      -ms-flex-flow: row wrap;
+          flex-flow: row wrap;
+  -webkit-justify-content: space-around;
+      -ms-flex-pack: distribute;
+          justify-content: space-around;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-align-content: space-around;
+      -ms-flex-line-pack: distribute;
+          align-content: space-around;
+}
+
+.infoBox {
+  background-color: rgba(255,255,255,0.95);
+  border: 1px solid rgba(239,239,239,1.0);
+  padding: 20px;
+  max-width: 663px;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -33,11 +80,45 @@ body {
   -webkit-align-items: center;
       -ms-flex-align: center;
           align-items: center;
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  right: 0px;
-  bottom: 0px;
+}
+
+.infoRight {
+  margin-left: 10px;
+}
+
+.content {
+  max-width: 303px;
+}
+
+.contentFlex {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-flow: row wrap;
+      -ms-flex-flow: row wrap;
+          flex-flow: row wrap;
+  -webkit-box-pack: left;
+  -webkit-justify-content: left;
+      -ms-flex-pack: left;
+          justify-content: left;
+  -webkit-box-align: top;
+  -webkit-align-items: top;
+      -ms-flex-align: top;
+          align-items: top;
+  padding: 10px;
+}
+
+.flagLogo {
+  max-width: 215px;
+}
+
+.background {
+  width: 100%;
+}
+
+.slide-show-container {
+
 }
 
 .ka-carousel-frame {
@@ -80,11 +161,8 @@ body {
   -webkit-align-items: center;
       -ms-flex-align: center;
           align-items: center;
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  right: 0px;
   background-color: rgba(255,255,255,0.75);
+  border-bottom: 1px solid rgba(239,239,239,1.0);
   z-index: 1000;
 }
 
@@ -93,6 +171,7 @@ body {
   margin: 20px;
 }
 
+/* carousel ul */
 .image {
   height: 400px;
   width: 600px;
