@@ -20,7 +20,7 @@ body {
   margin: 10px;
 }
 
-.back-glow {
+.back-shadow {
   box-shadow: 5px 5px 25px 22px rgba(0, 0, 0, 0.4);
 }
 
@@ -34,7 +34,7 @@ body {
   bottom: 0px;
 }
 
-.main {
+.row {
   flex: 2;
   display: flex;
   flex-flow: row wrap;
@@ -70,8 +70,20 @@ body {
   padding: 10px;
 }
 
+.sideHeader {
+  max-width: 170px;
+}
+
+.largeScreen {
+  display: initial;
+}
+
+.mediumScreen {
+  display: none;
+}
+
 .flagLogo {
-  max-width: 215px;
+  max-width: 120px;
 }
 
 .background {
@@ -81,6 +93,7 @@ body {
 .slide-show-container {
 
 }
+
 
 .ka-carousel-frame {
   display: flex;
@@ -124,15 +137,39 @@ body {
   max-height: 400px;
 }
 
+.sideImage {
+  width: 450px;
+}
+
 /* Medium screens */
 @media all and (max-width: 800px) {
   /*.logo-container {
     justify-content: flex-start;
   }*/
 
+  .largeScreen {
+    display: none;
+  }
+
+  .mediumScreen {
+    display: block;
+  }
+
+  .flagLogo {
+    max-width: 75px;
+  }
+
   .logo {
     width: 200px;
   }
+
+}
+
+/* Small screens */
+@media all and (max-width: 500px) {
+  /*.logo-container {
+    justify-content: flex-start;
+  }*/
 
   .image {
     width: 300px;
@@ -143,13 +180,10 @@ body {
     max-width: 300px;
     max-height: 200px;
   }
-}
 
-/* Small screens */
-@media all and (max-width: 500px) {
-  /*.logo-container {
-    justify-content: flex-start;
-  }*/
+  .back-shadow {
+    box-shadow: none;
+  }
 }
 
 
