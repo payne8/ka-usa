@@ -37,7 +37,8 @@ body {
 .row {
   flex: 2;
   display: flex;
-  flex-flow: row wrap;
+  flex-direction: row;
+  flex-flow: wrap;
   justify-content: space-around;
   align-items: center;
   align-content: space-around;
@@ -64,7 +65,8 @@ body {
 
 .contentFlex {
   display: flex;
-  flex-flow: row wrap;
+  flex-direction: row;
+  flex-flow: wrap;
   justify-content: left;
   align-items: top;
   padding: 10px;
@@ -97,7 +99,8 @@ body {
 
 .ka-carousel-frame {
   display: flex;
-  flex-flow: row wrap;
+  flex-direction: row;
+  flex-flow: wrap;
   justify-content: center;
   align-items: center;
 }
@@ -138,7 +141,11 @@ body {
 }
 
 .sideImage {
-  width: 450px;
+  width: 250px;
+}
+
+.center-image {
+
 }
 
 /* Medium screens */
@@ -170,6 +177,15 @@ body {
   /*.logo-container {
     justify-content: flex-start;
   }*/
+
+  .row {
+    display: block;
+  }
+
+  .slide-show-container {
+    padding-top: 20px;
+    margin: 0px auto;
+  }
 
   .image {
     width: 300px;
