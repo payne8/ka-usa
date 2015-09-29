@@ -44,6 +44,14 @@ body {
   align-content: space-around;
 }
 
+.footer {
+  background-color: rgba(255,255,255,0.75);
+}
+
+.hcenter {
+  margin: 0px auto;
+}
+
 .infoBox {
   background-color: rgba(255,255,255,0.95);
   border: 1px solid rgba(239,239,239,1.0);
