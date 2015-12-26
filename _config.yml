@@ -1,5 +1,5 @@
-title: Keystone Armory
-description: Website for Keystone Armory
+title: Keystone Armory Oklahoma
+description: Website for Keystone Armory Oklahoma
 permalink: /:title/
 exclude: [.gitignore, bower.json, README.md]
 defaults:
