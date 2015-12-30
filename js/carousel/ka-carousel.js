@@ -11,10 +11,10 @@ angular.module('app').directive('kaCarousel', [function() {
       }
       scope.images = [
         'Colors-SituatorSS.png',
-        'AR-15-Black.jpg',
-        'AR-15-Brown.jpg',
-        'SituatorSS-Mounted-Black.jpg',
-        'SituatorSS-Mounted-Grey.jpg',
+        'AR-15-Black.JPG',
+        'AR-15-Brown.JPG',
+        'SituatorSS-Mounted-Black.JPG',
+        'SituatorSS-Mounted-Grey.JPG',
       ];
     }
   };
