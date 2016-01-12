@@ -1,0 +1,803 @@
+---
+title: 'GeoCodingTool'
+description: 'A tool for looking up the geocode for a particular address.'
+---
+<style>
+  html, body { height: 100%; margin: 0; padding: 0; }
+        #map { height: 100%; }
+</style>
+<div>
+  <input id="address" type="text" name="address"/>
+  <button id="submit">Submit<button>
+</div>
+<div id="map"></div>
+<script>
+  var map;
+  var aiLib = (function(lib) {
+    var self = lib || {};
+    var GOOGLE_API_KEY = 'AIzaSyBVHd7wY86U40Gmy8ftOZAIzFw3zGtGSMM';
+
+    function get(url) {
+      return new Promise(function(resolve, reject) {
+        var req = new XMLHttpRequest();
+        req.open('GET', url);
+        req.onload = function() {
+          if (req.status == 200 || req.status === 0) {
+            resolve(req.response);
+          } else {
+            reject(Error(req.statusText));
+          }
+        };
+        req.onerror = function() {
+          reject(Error("Network Error"));
+        };
+        req.send();
+      });
+    }
+
+    function getJSON(url) {
+      return get(url).then(JSON.parse);
+    }
+
+    function getLocation() {
+      var defer = new Promise(function(resolve, reject) {
+        if ("geolocation" in navigator) {
+          /* geolocation is available */
+          navigator.geolocation.getCurrentPosition(function(position) {
+            resolve(position);
+          });
+        } else {
+          reject('geolocation IS NOT available');
+        }
+      });
+      return defer;
+    }
+
+    function getPositionOfAddress(address) {
+      var url = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + address + '&key=' + GOOGLE_API_KEY;
+      return getJSON(url);
+    }
+
+    self.get = get;
+    self.getJSON = getJSON;
+    self.getLocation = getLocation;
+    self.getPositionOfAddress = getPositionOfAddress;
+
+    return self;
+  })(aiLib);
+
+  var addresses = [
+    [
+      "FORT CHAFFEE OUTFITTERS INC",
+      "2103 Fort Street Barling, AR 72923 United States",
+      35.3364134,
+      -94.3178446
+    ],
+    [
+      "EL DORADO PAWN& MILITARY SURPL",
+      "107 West Hillsboro El Dorado, AR 71730",
+      33.2074143,
+      -92.6627865
+    ],
+    [
+      "DONS WEAPONRY",
+      "4116 E BROADWAY North Little Rock, AR 72117 United States",
+      34.777697,
+      -92.1253854
+    ],
+    [
+      "Bailey Signature Fire Arms",
+      "420 Hayden Dr. Russellville, AR 72802 United States",
+      35.337191,
+      -93.066356
+    ],
+    [
+      "BANK STREET GUNS",
+      "43995 N BANK STREET KINGMAN, AZ 86409",
+      35.2788675,
+      -114.011647
+    ],
+    [
+      "Shooters Vault",
+      "1985 W Happy Valley Rd STE 115 Phoenix, AZ 85085 United States",
+      33.7122475,
+      -112.1020088
+    ],
+    [
+      "Shooters Vault 323nd LLC",
+      "32022 E Greenway Rd Phoenix, AZ 85032 United States",
+      33.6264023,
+      -112.0046712
+    ],
+    [
+      "GUNS PLUS",
+      "16551 N Dysart Rd Surprise, AZ 85378 United States",
+      33.6337816,
+      -112.3416821
+    ],
+    [
+      "Westminster Arms Inc",
+      "6785 Wadsworth Blvd. Arvada, CO",
+      39.8195551,
+      -105.0817848
+    ],
+    [
+      "Whistling Pines Gun Club",
+      "1412 Woolsey Heights Colorado Springs, CO 80915 United States",
+      38.8485357,
+      -104.6878807
+    ],
+    [
+      "303 Arms Inc",
+      "1600 W 13th Ave, Ste 1A Denver, CO 80204 United States",
+      39.7366943,
+      -105.0081387
+    ],
+    [
+      "Machine Gun Tours",
+      "12550 W Colfax Ave. Denver, CO 80215 United States",
+      39.7393999,
+      -105.1390716
+    ],
+    [
+      "ALPINE ARMS",
+      "713-1 Bull Run Eagle, CO 81631 United States",
+      39.6481205,
+      -106.8316886
+    ],
+    [
+      "VIKING ARMAMENT",
+      "2473COMMERCE BLVd GRAND JUNCTION, CO 81505",
+      39.0638705,
+      -108.5506486
+    ],
+    [
+      "Denver Guns and Ammo",
+      "8250 W Coal Mine Ave Unit2 Littleton, CO 80123 United States",
+      39.6166037,
+      -105.0674317
+    ],
+    [
+      "FRONT RANGE GUN CLUB",
+      "697 DENVER AVE SE 128 LOVELAND, CO 80537 United States",
+      40.39376650000001,
+      -105.0447721
+    ],
+    [
+      "Front Range Gun Club",
+      "697 N Denver Ave., Suite 128 Loveland, CO 80537 United States",
+      40.397034,
+      -105.047559
+    ],
+    [
+      "JENSEN ARMS INC",
+      "285 E 29th, Ste E Loveland, CO 80538 United States",
+      40.3977612,
+      -105.0749801
+    ],
+    [
+      "TBF Arms LLC",
+      "593 Blaine Dr Pueblo, CO 81007 United States",
+      38.35568689999999,
+      -104.7125072
+    ],
+    [
+      "DOUBLE EAGLE FIREARMS AND PAWN",
+      "104 SUMMIT ST Arkansas City, KS 67005 United States",
+      37.0625652,
+      -97.03899559999999
+    ],
+    [
+      "SOUTHERN STAR",
+      "3390 CR-3400 Independence, KS 67301 United States",
+      37.2242358,
+      -95.7083131
+    ],
+    [
+      "SHERMAN FIREARMS",
+      "SHERMAN FIREARMS 406 W CHEROKEE ST NEW STRAWN, KS 66839",
+      38.2663595,
+      -95.7429236
+    ],
+    [
+      "CENTERFIRE SHOOTING CENTER",
+      "875 N JAN-MAR COURT Olathe, KS 66061 United States",
+      38.8909748,
+      -94.7947141
+    ],
+    [
+      "D9 FIREARMS",
+      "10072 GOODMAN DR. Overland Park, KS 66212 United States",
+      38.9461,
+      -94.68128899999999
+    ],
+    [
+      "B ALLEN SALES",
+      "11940 W Central Ave Wichita, KS 67212 United States",
+      37.6940024,
+      -97.47997649999999
+    ],
+    [
+      "BULLSEYE WICHITA INC.",
+      "1455 N Terrace Wichita, KS 67208 United States",
+      37.701103,
+      -97.27607599999999
+    ],
+    [
+      "MICHAELS MEN STORE",
+      "515 WEST MAIN ST Homer, LA 71040 United States",
+      32.7915768,
+      -93.05549479999999
+    ],
+    [
+      "4 STATES SHOOTERS SUPPLY",
+      "3232 E 32ND ST Joplin, MO 64804 United States",
+      37.0547226,
+      -94.4738981
+    ],
+    [
+      "EDI PLUS",
+      "1250 N KINDER Nixa, MO 65714 United States",
+      37.0433863,
+      -93.294353
+    ],
+    [
+      "HATCHER GUN COMPANY",
+      "HATCHER GUN COMPANY 76650 RD 342 Elsie, NE 69134",
+      40.8475929,
+      -101.3896601
+    ],
+    [
+      "HATCHER GUN COMPANY",
+      "76650 RD 342 Elsie, NE 69134 United States",
+      40.8475929,
+      -101.3896601
+    ],
+    [
+      "CALIBERS NATIONAL SHOOTERS",
+      "9320 COORS BLVD NW Albuquerque, NM 87114 United States",
+      35.1838698,
+      -106.6640603
+    ],
+    [
+      "CALLIBERS NATIONAL SHOOTERS",
+      "4340 CUTTLER NE Albuquerque, NM 87114 United States",
+      35.1958704,
+      -106.6939803
+    ],
+    [
+      "FIRST STREET FIREARMS LLC",
+      "1711 N 1ST ST Artesia, NM 88210 United States",
+      32.859327,
+      -104.3996839
+    ],
+    [
+      "PATRIOT OUTDOORS",
+      "1250 CR 16 Clovis, NM 88101 United States",
+      34.492262,
+      -103.2403307
+    ],
+    [
+      "Strykers Shooting World",
+      "415B S VALLEY DR Las Cruces, NM 88005 United States",
+      32.3031451,
+      -106.7919039
+    ],
+    [
+      "Discount Firearms",
+      "3084 S Highland Dr., Ste. B Las Vegas, NV 89109 United States",
+      36.1337076,
+      -115.1746937
+    ],
+    [
+      "GUN GARAGE",
+      "5155 S DEAN MARTIN Las Vegas, NV 89118 United States",
+      36.0809667,
+      -115.2244853
+    ],
+    [
+      "GUN SHOW AMMO",
+      "7291 S Eastern Ave. Las Vegas, NV 89119 United States",
+      36.0574572,
+      -115.120315
+    ],
+    [
+      "Lock N Load Tactical",
+      "9340 S Eastern Ave, Ste. 104 Las Vegas, NV 89123 United States",
+      36.0189286,
+      -115.1180859
+    ],
+    [
+      "MRC ENTERPRISES LLC",
+      "4351 Corporate Center Dr, Ste North Las Vegas, NV 89030 United States",
+      36.2040034,
+      -115.1296249
+    ],
+    [
+      "LOCKED AND LOADED",
+      "PO BOX 154 Choctaw, OK 73020 United States",
+      35.4975625,
+      -97.2689212
+    ],
+    [
+      "MCALESTER TACTICAL SUPPLY",
+      "601 N. MAIN STREET McAlester, OK 74501 United States",
+      34.9380502,
+      -95.76869780000001
+    ],
+    [
+      "KEYSTONE ARMORY",
+      "25103WEST 41 STREET Sand Springs, OK 74063 United States",
+      36.1398102,
+      -96.108891
+    ],
+    [
+      "DARC OPS ARMORY",
+      "DARC OPS ARMORY 14600 ACME Road Shawnee, OK 74804",
+      35.352992,
+      -96.96708199999999
+    ],
+    [
+      "PATTON'S POWDER KEG",
+      "1705 OLD MILITARY RD. Stigler, OK 74462 United States",
+      35.253708,
+      -95.1230169
+    ],
+    [
+      "RED BUD FIREARMS LLC",
+      "2232 E 17TH PL Tulsa, OK 74104 United States",
+      36.136634,
+      -95.958733
+    ],
+    [
+      "SPORTS WORLD",
+      "SPORTS WORLD 6841 E 41st Street Tulsa, OK 74145",
+      36.1048862,
+      -95.8996343
+    ],
+    [
+      "WOODLAND SPORTS / TULSA SILENC",
+      "WOODLAND SPORTS / TULSA SILENC 7233 85TH E AVE STE 400 Tulsa, OK 74133",
+      36.0587327,
+      -95.8812008
+    ],
+    [
+      "TIN STAR SHOOTING RANGE",
+      "25254 S FRONTAGE ROAC Weatherford, OK 73096 United States",
+      35.5261633,
+      -98.7075744
+    ],
+    [
+      "SILENT NIGHT TACTICAL",
+      "SILENT NIGHT TACTICAL 3601 AUSTRIAN PINE LANE Yukon, OK 73099",
+      35.506882,
+      -97.714523
+    ],
+    [
+      "S & R GUNS",
+      "434 WEST MAIN STREET ALGOOD, TN 38506",
+      36.187979,
+      -85.45376499999999
+    ],
+    [
+      "FRANKLIN GUN SHOP",
+      "1214 LAKEVIEW DRIVE FRANKLIN, TN 37067",
+      35.9194372,
+      -86.824446
+    ],
+    [
+      "GUNS & LEATHER(GREENBRIAR)",
+      "2216 HIGHWAY 41 S GREENBRIER, TN 37073",
+      36.4132851,
+      -86.79205789999999
+    ],
+    [
+      "LEBANON GUN SHOP",
+      "102A HARTMANN DR LEBANON, TN 37087",
+      36.2150388,
+      -86.321671
+    ],
+    [
+      "NASHVILLE ARMORY",
+      "4290 KENILWOOD DR NASHVILLE, TN 37204",
+      36.0963629,
+      -86.7622063
+    ],
+    [
+      "ERWIN PAWN INC",
+      "1506 E 10TH Amarillo, TX 79102 United States",
+      35.200809,
+      -101.8236063
+    ],
+    [
+      "GARRETS OUTDOOR SUPPLIES II",
+      "295 HIGHWAY 82 WEST AVERY, TX 75050 United States",
+      32.7811446,
+      -97.0175879
+    ],
+    [
+      "DFW SHOOTING SPORTS",
+      "DFW SHOOTING SPORTS 105 BEDFORD RD Bedford, TX 76022",
+      32.8343522,
+      -97.16728959999999
+    ],
+    [
+      "ASH OUTDOORS",
+      "9NE FABRA LN Boerne, TX 78006 United States",
+      29.8295016,
+      -98.7612527
+    ],
+    [
+      "LONE STAR OUTFITTERS",
+      "107 W SABINE Carthage, TX 75633 United States",
+      32.1573841,
+      -94.3374199
+    ],
+    [
+      "CAPITOL ARMORY",
+      "2000 WINDY TERRACE SUITE 1A Cedar Park, TX 78613 United States",
+      30.46081869999999,
+      -97.8334245
+    ],
+    [
+      "Burdett &Son Outdoor Adventure",
+      "1055 Texas Ave. S Ste 104 College Station, TX 77840 United States",
+      30.622305,
+      -96.3273013
+    ],
+    [
+      "SPORTS GUNS AND AMMO",
+      "212 Porter Rd, FM 1314 Conroe, TX 77301 United States",
+      30.3120301,
+      -95.42537569999999
+    ],
+    [
+      "MODERN PAWN AND JEWELRY",
+      "1701 AIRLINE RD Corpus Christi, TX 78412 United States",
+      27.699197,
+      -97.3634581
+    ],
+    [
+      "THE SHARP SHOOTER",
+      "5515 STAPLES ST Corpus Christi, TX 78411 United States",
+      27.7009431,
+      -97.37472860000001
+    ],
+    [
+      "AGR OUTDOORS",
+      "15926 CYPRESS N HOUSTON Cypress, TX 77429 United States",
+      30.0141064,
+      -95.6668306
+    ],
+    [
+      "DFW GUN RANGE",
+      "1607 MOCKINGBIRD LANE Dallas, TX 75235 United States",
+      32.8227741,
+      -96.85825179999999
+    ],
+    [
+      "JACKSON ARMORY",
+      "3416 ROSEDALE Dallas, TX 75202 United States",
+      32.7774686,
+      -96.8042882
+    ],
+    [
+      "RAY'S HARDWARE",
+      "730 SINGLETON BLDV. Dallas, TX 75212 United States",
+      32.78297800000001,
+      -96.8833562
+    ],
+    [
+      "THE ARMS ROOM",
+      "3270 GULF FREEWAY Dickinson, TX 77539 United States",
+      29.4676387,
+      -95.09254879999999
+    ],
+    [
+      "DEFENDER OUTDOORS",
+      "213 N RUPERT ST Fort Worth, TX 76107 United States",
+      32.760888,
+      -97.34980949999999
+    ],
+    [
+      "FRISCO GUN CLUB",
+      "FRISCO GUN CLUB 6565 Eldorado Pkwy Frisco, TX 75033",
+      33.1738183,
+      -96.82795759999999
+    ],
+    [
+      "Collectors Firearms",
+      "3301 Fondern Houston, TX 77063 United States",
+      29.73754379999999,
+      -95.5249863
+    ],
+    [
+      "FULL ARMOR FIREARMS",
+      "11911 KATY FREEWAY Houston, TX 77079 United States",
+      29.783634,
+      -95.5959306
+    ],
+    [
+      "Sportsmans Outlet Indoor Shoot",
+      "1710 FM 1960 Bypass E, Humble, TX 77338 United States",
+      30.0020116,
+      -95.24922989999999
+    ],
+    [
+      "ABLES SPORTING GOODS",
+      "357 FM 1791 N Huntsville, TX 77320 United States",
+      30.7235263,
+      -95.55077709999999
+    ],
+    [
+      "EAGLE GUN RANGE",
+      "EAGLE GUN RANGE 491 W VALLEY RIDGE BLVD LEWISVILLE, TX 75057",
+      33.058328,
+      -97.00319909999999
+    ],
+    [
+      "EAGLE RUN RANGE",
+      "491 W VALLEY RIDGE BLVD Lewisville, TX 75057 United States",
+      33.058328,
+      -97.00319909999999
+    ],
+    [
+      "SHARP SHOOTERS KNIFE & GUN",
+      "5062 50TH Lubbock, TX 79414 United States",
+      33.5488202,
+      -101.9200539
+    ],
+    [
+      "FRONT SIGHT FIREARMS",
+      "4150 ELDORADO PKWY Mc Kinney, TX 75071 United States",
+      33.1689814,
+      -96.6709205
+    ],
+    [
+      "TMP HUNTERS EQUIPMENT",
+      "2700 S RANKIN HWY 349 Midland, TX 79706 United States",
+      31.3679924,
+      -101.9413114
+    ],
+    [
+      "Pasadena Gun Center",
+      "206 Shaw Ave Pasadena, TX 77506 United States",
+      29.712303,
+      -95.21028
+    ],
+    [
+      "BULLET TRAP",
+      "BULLET TRAP INC 2609 DOBIE DR. Plano, TX 75074 United States",
+      33.0335272,
+      -96.69793159999999
+    ],
+    [
+      "MISTER GUNS",
+      "2751 W 15TH ST Plano, TX 75075 United States",
+      33.0193524,
+      -96.7477648
+    ],
+    [
+      "NFA VENTURES",
+      "117 EAGLE DR. Red Oak, TX 75154 United States",
+      32.506396,
+      -96.809066
+    ],
+    [
+      "A PLACE TO SHOOT",
+      "13250 PLEASANTON RD San Antonio, TX 78221 United States",
+      29.2852026,
+      -98.49662810000001
+    ],
+    [
+      "SOUTHERN TACTICAL",
+      "SOUTHERN TACTICAL 5826 Avenue B Sheridan, TX 77475 United States",
+      29.4940746,
+      -96.67447759999999
+    ],
+    [
+      "TAC 47 INDUSTRIES",
+      "5407 Louetta RD Spring, TX 77379 United States",
+      30.0346464,
+      -95.4967317
+    ],
+    [
+      "HOT ROD ARMS",
+      "1205A SSE LOOP 323 Tyler, TX 75701 United States",
+      32.3287365,
+      -95.26676150000002
+    ],
+    [
+      "Platinum Pawn & Jewelry",
+      "2310 N navarro St. Victoria, TX 77901 United States",
+      28.8166443,
+      -96.999792
+    ],
+    [
+      "The Vault Gun & Pawn",
+      "696 W 200 N Cedar City, UT 84720 United States",
+      37.68086600000001,
+      -113.0725192
+    ],
+    [
+      "NEW FRONTIER",
+      "150 E Centennial Pkwy, North Las Vegas, NV 89084",
+      36.2769842,
+      -115.1380177
+    ]
+  ];
+
+  function toRad(num) {
+    return num * Math.PI / 180;
+  }
+
+  function Haversine(coord1, coord2) {
+    var lat2 = coord2.lat;
+    var lon2 = coord2.lng;
+    var lat1 = coord1.lat;
+    var lon1 = coord1.lng;
+
+    var R = 6371; // km
+    var x1 = lat2-lat1;
+    var dLat = toRad(x1);
+    var x2 = lon2-lon1;
+    var dLon = toRad(x2);
+    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    var d = R * c;
+
+    return d;
+  }
+
+  function onAddressSubmit() {
+    var input = document.getElementById('address');
+    var address = input.value;
+    aiLib.getPositionOfAddress(address).then(function(response) {
+      console.log(response);
+    });
+  }
+
+  function getPositionForAddress(index) {
+    aiLib.getPositionOfAddress(addresses[index][1]).then(function(res) {
+      if (res.status === 'OK') {
+        var lat = res.results[0].geometry.location.lat;
+        var lng = res.results[0].geometry.location.lng;
+        addresses[index].push(lat);
+        addresses[index].push(lng);
+      }
+    });
+  }
+
+  function getAllGeoLocations() {
+    var answer = [];
+    for (var i in addresses) {
+      var address = addresses[i];
+      if (address.length < 3) {
+        getPositionForAddress(i);
+      }
+    }
+  }
+
+  function calculateAllDistances(myCoords) {
+    for (var i in addresses) {
+      var distance = Haversine(myCoords, addresses[i]);
+      addresses[i].distance = distance;
+    }
+  }
+
+  function init() {
+    getAllGeoLocations();
+    addresses = convertAllAddressesToObject();
+    aiLib.getLocation()
+      .then(function(res) {
+        var myCoords = {
+          lat: res.coords.latitude,
+          lng: res.coords.longitude,
+        };
+        var nearByLocations = searchLocationsNear(myCoords);
+        console.log(nearByLocations);
+        // TODO: place on map
+        mapController.initMap(myCoords, addresses.sort(function(a, b) {
+          return a.distance - b.distance;
+        }));
+      })
+      .catch(function(err) {
+        console.log(err);
+      });
+  }
+
+  function searchLocationsNear(center) {
+    var nearByLocations = [];
+    calculateAllDistances(center);
+    addresses.sort(function(a, b) {
+      return a.distance - b.distance;
+    });
+    for (var i = 0; i < 15; i++) {
+      nearByLocations.push(addresses[i]);
+    }
+    return nearByLocations;
+  }
+
+  function convertArrayToObject(address) {
+    var answer = {};
+    answer.name = address[0];
+    answer.address = address[1];
+    answer.lat = address[2];
+    answer.lng = address[3];
+    if (address.length > 4) {
+      answer.distance = address[4];
+    }
+
+    return answer;
+  }
+
+  function convertAllAddressesToObject() {
+    var addressObjectList = [];
+    for (var i in addresses) {
+      addressObjectList.push(convertArrayToObject(addresses[i]));
+    }
+    return addressObjectList;
+  }
+
+  var mapController = (function() {
+    var self = {};
+    var map;
+    var markers = [];
+    var infowindow;
+    var locationSelect;
+
+    self.initMap = function(center, nearByLocations) {
+      var marker, i;
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: center,
+        zoom: 8
+      });
+
+      infowindow = new google.maps.InfoWindow();
+
+      self.setMarkers(nearByLocations);
+    };
+
+    self.setMarkers = function(nearByLocations) {
+      for (i = 0; i < nearByLocations.length; i++) {
+        marker = new google.maps.Marker({
+          position: new google.maps.LatLng(nearByLocations[i].lat, nearByLocations[i].lng),
+          map: map
+        });
+
+        google.maps.event.addListener(marker, 'click', (function(marker, i) {
+          return function() {
+            infowindow.setContent(nearByLocations[i].name + '<br>' + nearByLocations[i].address + '<br><a target="_blank" href="https://www.google.com/maps/dir/Current+Location/' + nearByLocations[i].address + '">directions</a>');
+            infowindow.open(map, marker);
+          }
+        })(marker, i));
+        markers.push(marker);
+      }
+    };
+
+    self.clearMarkers = function() {
+      infoWindow.close();
+      for (var i = 0; i < markers.length; i++) {
+        markers[i].setMap(null);
+      }
+      markers.length = 0;
+
+      // locationSelect.innerHTML = "";
+      // var option = document.createElement("option");
+      // option.value = "none";
+      // option.innerHTML = "See all results:";
+      // locationSelect.appendChild(option);
+      // locationSelect.style.visibility = "visible";
+    };
+
+    return self;
+  })();
+
+  document.getElementById('submit').addEventListener('click', onAddressSubmit);
+
+</script>
+<script async defer
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVHd7wY86U40Gmy8ftOZAIzFw3zGtGSMM&callback=init">
+</script>
